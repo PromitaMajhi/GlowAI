@@ -52,18 +52,20 @@ Analyze the user's skin concern and provide EXACTLY a valid JSON response with t
 Ensure exactly 3 product recommendations with simple search links. Keep answers safe, simple, and non-medical.`;
 
     const completion = await openai.chat.completions.create({
-      model: 'openai/gpt-3.5-turbo',
+      model: 'meta-llama/llama-3.3-8b-instruct:free',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: message }
       ],
       temperature: 0.7,
-      max_tokens: 800,
-      response_format: { type: "json_object" }
+      max_tokens: 1000,
     });
 
-    const replyText = completion.choices[0].message.content;
-    const replyJson = JSON.parse(replyText);
+    let replyText = completion.choices[0].message.content;
+    // Extract JSON from markdown code blocks if present
+    const jsonMatch = replyText.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (jsonMatch) replyText = jsonMatch[1];
+    const replyJson = JSON.parse(replyText.trim());
 
     res.json({ reply: replyJson });
   } catch (error) {
