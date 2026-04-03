@@ -28,24 +28,25 @@ app.post('/ask', async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    const systemPrompt = `You are a professional skincare expert.
-Analyze the user's skin concern and provide EXACTLY a valid JSON response with the following structure:
+    const systemPrompt = `You are a highly advanced AI dermatologist and skincare expert named GlowAI.
+Analyze the user's input (which could be a skin problem, an ingredient list, weather conditions, or voice note) and provide a JSON response exactly like this:
 {
-  "analysis": "Short skin analysis",
+  "analysis": "Detailed explanation of their condition or the ingredients they sent",
   "routine": {
-    "morning": "Morning routine steps",
-    "night": "Night routine steps"
+    "morning": "Morning step-by-step",
+    "night": "Night step-by-step"
   },
-  "tips": ["Useful tip 1", "Useful tip 2"],
+  "tips": ["Tip 1", "Tip 2", "Weather/Diet tip"],
   "products": [
     {
       "name": "Product Name",
-      "description": "Short reason",
+      "description": "Why it works",
       "buyLink": "https://www.amazon.com/s?k=skincare"
     }
-  ]
+  ],
+  "needsDoctor": false // Set to true ONLY if they mention severe acne, bleeding, extreme allergies
 }
-Ensure exactly 3 product recommendations with simple search links. Keep answers safe, simple, and non-medical.`;
+Keep tips very practical and provide exactly 3 valid product recommendations. NEVER break the JSON format.`;
 
     const completion = await openai.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
