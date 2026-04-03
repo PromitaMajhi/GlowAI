@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GlowAI - Skincare Assistant</title>
+  <title>GlowAI - Advanced Skincare Assistant</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
   <style>
@@ -14,7 +14,9 @@
       --white: #FFFFFF;
       --text-dark: #333333;
       --text-light: #7A7A7A;
-      --bg-color: #fbfbfb;
+      --bg-color: #fcecef;
+      --accent-green: #10B981;
+      --alert-red: #EF4444;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,6 +29,8 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      background-image: radial-gradient(circle at 10% 20%, rgba(250, 218, 221, 0.4) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(245, 245, 220, 0.6) 0%, transparent 40%);
     }
 
     .app-container {
@@ -35,16 +39,20 @@
       height: 100vh;
       max-height: 850px;
       background-color: var(--white);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
       position: relative;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
 
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--primary-pink); border-radius: 4px; }
+
     /* Home View */
     .home-view {
-      padding: 30px 24px;
+      padding: 24px;
       flex: 1;
       overflow-y: auto;
       transition: all 0.3s ease;
@@ -54,290 +62,122 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 40px;
+      margin-bottom: 24px;
     }
 
-    .logo-text {
-      font-family: 'Outfit', sans-serif;
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text-dark);
-    }
+    .logo-text { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 700; color: var(--text-dark); }
+    .profile-btn { font-size: 24px; color: var(--text-light); cursor: pointer; }
 
-    .welcome-text h1 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 36px;
-      margin-bottom: 8px;
+    /* Weather Widget */
+    .weather-widget {
+      background: linear-gradient(135deg, rgba(245, 245, 220, 0.5) 0%, rgba(250, 218, 221, 0.5) 100%);
+      padding: 16px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(250, 218, 221, 0.8);
     }
+    .weather-icon { font-size: 28px; color: #F59E0B; }
+    .weather-text h4 { font-size: 14px; font-family: 'Outfit'; }
+    .weather-text p { font-size: 12px; color: var(--text-light); margin-top: 2px;}
 
-    .welcome-text p {
-      color: var(--text-light);
-      margin-bottom: 40px;
-      font-size: 16px;
-    }
+    .welcome-text h1 { font-family: 'Outfit', sans-serif; font-size: 32px; margin-bottom: 6px; }
+    .welcome-text p { color: var(--text-light); margin-bottom: 24px; font-size: 15px; }
 
+    /* Input Card */
     .input-card {
       background: var(--white);
       border-radius: 24px;
       box-shadow: 0 10px 25px rgba(250, 218, 221, 0.5);
-      padding: 8px;
+      padding: 6px;
       display: flex;
       align-items: center;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       border: 1px solid var(--primary-pink);
     }
-
     .input-card input {
-      flex: 1;
-      border: none;
-      padding: 16px 20px;
-      outline: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      background: transparent;
+      flex: 1; border: none; padding: 14px 16px; outline: none; font-family: 'Inter', sans-serif; background: transparent; font-size: 14px;
     }
-
-    .send-btn {
-      background: var(--primary-pink);
-      border: none;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      color: var(--text-dark);
-      transition: transform 0.2s;
+    .icon-btn {
+      background: transparent; border: none; width: 36px; height: 36px;
+      border-radius: 50%; color: var(--text-light); font-size: 20px; cursor: pointer;
+      display: flex; justify-content: center; align-items: center; transition: 0.2s;
     }
+    .icon-btn:hover { color: var(--primary-dark); }
+    .send-btn { background: var(--primary-pink); width: 40px; height: 40px; color: var(--text-dark); margin-left: 4px; }
+    .send-btn:hover { background: var(--primary-dark); color: white; transform: scale(1.05); }
     
-    .send-btn:hover { transform: scale(1.05); }
+    .mic-recording { animation: pulseMic 1.5s infinite; color: var(--alert-red) !important; }
+    @keyframes pulseMic { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
-    .suggestions-title {
-      font-weight: 600;
-      margin-bottom: 16px;
-      font-size: 15px;
+    /* Routine Tracker */
+    .routine-container { margin-bottom: 30px; }
+    .section-title { font-weight: 600; margin-bottom: 12px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+    .routine-card {
+      background: var(--white); border: 1px solid #f0f0f0; border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
     }
+    .routine-info h4 { font-size: 14px; margin-bottom: 2px; }
+    .routine-info p { font-size: 11px; color: var(--text-light); }
+    .checkbox-custom { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--primary-pink); display: flex; justify-content: center; align-items: center; cursor: pointer; color: transparent; transition: 0.2s;}
+    .checkbox-custom.checked { background: var(--primary-pink); color: var(--text-dark); }
 
-    .chips-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .chip {
-      background: var(--secondary-beige);
-      padding: 10px 20px;
-      border-radius: 20px;
-      font-size: 14px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background 0.2s;
-    }
-    
-    .chip:hover {
-      background: var(--primary-pink);
-    }
+    .chips-wrapper { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip { background: var(--secondary-beige); padding: 8px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; font-weight: 500; transition: 0.2s; border: 1px solid transparent; }
+    .chip:hover { background: var(--primary-pink); border-color: var(--primary-dark); }
 
     /* Chat View */
-    .chat-view {
-      display: none;
-      flex-direction: column;
-      height: 100%;
-      background: rgba(245, 245, 220, 0.2);
-    }
+    .chat-view { display: none; flex-direction: column; height: 100%; background: #fcfcfc; }
+    .chat-header { background: var(--white); padding: 16px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); z-index: 10; }
+    .back-btn { font-size: 24px; cursor: pointer; color: var(--text-dark); }
+    .avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary-pink), var(--primary-dark)); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--white); box-shadow: 0 4px 10px rgba(250,218,221,0.5); }
+    .header-info h3 { font-family: 'Outfit', sans-serif; font-size: 18px; }
+    .header-info p { font-size: 12px; color: var(--accent-green); font-weight: 500; }
 
-    .chat-header {
-      background: var(--white);
-      padding: 20px 24px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-      z-index: 10;
-    }
-
-    .back-btn {
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--text-dark);
-    }
-
-    .avatar {
-      width: 40px;
-      height: 40px;
-      background: var(--primary-pink);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20px;
-      color: var(--white);
-    }
-
-    .header-info h3 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 18px;
-    }
-
-    .header-info p {
-      font-size: 12px;
-      color: #10B981;
-      font-weight: 500;
-    }
-
-    .chat-body {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .bubble {
-      max-width: 85%;
-      padding: 16px;
-      font-size: 15px;
-      line-height: 1.5;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .bubble-user {
-      align-self: flex-end;
-      background: var(--primary-pink);
-      color: var(--text-dark);
-      border-radius: 20px 20px 0 20px;
-      box-shadow: 0 4px 10px rgba(250, 218, 221, 0.4);
-    }
-
-    .bubble-ai {
-      align-self: flex-start;
-      background: var(--white);
-      color: var(--text-dark);
-      border-radius: 20px 20px 20px 0;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-    }
-
-    .ai-section-title {
-      font-size: 12px;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--primary-dark);
-      margin-top: 12px;
-      margin-bottom: 4px;
-      letter-spacing: 0.5px;
-    }
+    .chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
     
+    /* Scanner Overlay Demo */
+    .scan-overlay {
+      background: rgba(0,0,0,0.8); border-radius: 16px; padding: 20px; text-align: center; color: white; display: none; margin-bottom: 16px; animation: fadeIn 0.3s ease;
+    }
+    .scan-box { width: 100px; height: 100px; border: 3px dashed var(--primary-pink); border-radius: 20px; margin: 0 auto 10px; position: relative; overflow: hidden; }
+    .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--primary-pink); box-shadow: 0 0 10px var(--primary-pink); animation: scanAnim 2s infinite linear; }
+    @keyframes scanAnim { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+
+    .bubble { max-width: 88%; padding: 16px; font-size: 14px; line-height: 1.5; animation: fadeIn 0.3s ease; }
+    .bubble-user { align-self: flex-end; background: var(--primary-pink); color: var(--text-dark); border-radius: 20px 20px 0 20px; box-shadow: 0 2px 8px rgba(250, 218, 221, 0.4); }
+    .bubble-ai { align-self: flex-start; background: var(--white); color: var(--text-dark); border-radius: 20px 20px 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; }
+
+    .ai-section-title { font-size: 12px; text-transform: uppercase; font-weight: 700; color: var(--primary-dark); margin-top: 12px; margin-bottom: 6px; letter-spacing: 0.5px; }
     .bubble-ai .ai-section-title:first-child { margin-top: 0; }
-
-    .ai-list {
-      margin-left: 16px;
-      margin-bottom: 8px;
-    }
-
-    .products-carousel {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 10px 0;
-      scrollbar-width: none;
-    }
+    .ai-list { margin-left: 16px; margin-bottom: 8px; color: #444; }
     
-    .products-carousel::-webkit-scrollbar { display: none; }
+    .doctor-card { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: 12px; margin-top: 10px; display: flex; align-items: flex-start; gap: 10px; }
+    .doctor-card i { color: var(--alert-red); font-size: 20px; }
+    .doctor-card div h5 { color: var(--alert-red); font-size: 13px; margin-bottom: 4px;}
+    .doctor-card div p { font-size: 11px; color: #555; margin-bottom: 8px; }
+    .book-btn { background: var(--alert-red); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
-    .product-card {
-      min-width: 160px;
-      background: var(--secondary-beige);
-      padding: 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(250, 218, 221, 0.6);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .products-carousel { display: flex; gap: 12px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+    .product-card { min-width: 150px; background: var(--secondary-beige); padding: 12px; border-radius: 16px; border: 1px solid rgba(250, 218, 221, 0.6); display: flex; flex-direction: column; gap: 6px; }
+    .product-icon { font-size: 20px; color: var(--primary-dark); }
+    .product-name { font-weight: 600; font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .product-desc { font-size: 11px; color: var(--text-light); }
+    .buy-btn { margin-top: auto; background: var(--white); border: 1px solid var(--primary-pink); padding: 6px; border-radius: 8px; font-size: 11px; font-weight: 600; color: var(--text-dark); text-decoration: none; text-align: center; }
 
-    .product-icon {
-      font-size: 24px;
-      color: var(--primary-dark);
-    }
-
-    .product-name {
-      font-weight: 600;
-      font-size: 14px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .product-desc {
-      font-size: 11px;
-      color: var(--text-light);
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .buy-btn {
-      margin-top: auto;
-      background: var(--white);
-      border: 1px solid var(--primary-pink);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-dark);
-      text-decoration: none;
-      text-align: center;
-      transition: background 0.2s;
-    }
-
-    .buy-btn:hover { background: var(--primary-pink); }
-
-    .chat-footer {
-      background: var(--white);
-      padding: 16px 20px;
-      box-shadow: 0 -5px 15px rgba(0,0,0,0.03);
-    }
+    .chat-footer { background: var(--white); padding: 12px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.03); }
 
     /* Typing Indicator */
-    .typing-indicator {
-      display: none;
-      align-self: flex-start;
-      background: var(--white);
-      padding: 16px 20px;
-      border-radius: 20px 20px 20px 0;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-      margin-bottom: 20px;
-    }
-
-    .dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background: var(--primary-dark);
-      border-radius: 50%;
-      margin: 0 2px;
-      animation: bounce 1.4s infinite ease-in-out both;
-    }
+    .typing-indicator { display: none; align-self: flex-start; background: var(--white); padding: 14px 18px; border-radius: 20px 20px 20px 0; margin-bottom: 20px; border: 1px solid #f0f0f0; }
+    .dot { display: inline-block; width: 6px; height: 6px; background: var(--primary-dark); border-radius: 50%; margin: 0 2px; animation: bounce 1.4s infinite ease-in-out both; }
     .dot:nth-child(1) { animation-delay: -0.32s; }
     .dot:nth-child(2) { animation-delay: -0.16s; }
 
-    @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0); }
-      40% { transform: scale(1); }
-    }
+    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (min-width: 500px) {
-      .app-container { border-radius: 30px; margin: 20px; }
-    }
+    @media (min-width: 500px) { .app-container { border-radius: 30px; margin: 20px; } }
   </style>
 </head>
 <body>
@@ -348,7 +188,16 @@
     <div class="home-view" id="homeView">
       <div class="header-top">
         <div class="logo-text">GlowAI✨</div>
-        <i class="ri-user-smile-line" style="font-size: 24px; color: var(--text-light);"></i>
+        <i class="ri-user-smile-line profile-btn"></i>
+      </div>
+
+      <!-- NEW: Weather Integration -->
+      <div class="weather-widget">
+        <i class="ri-sun-cloudy-line weather-icon"></i>
+        <div class="weather-text">
+          <h4>Sunny & Humid, 32°C</h4>
+          <p>Perfect day! Don't forget your SPF 50 today.</p>
+        </div>
       </div>
 
       <div class="welcome-text">
@@ -357,19 +206,46 @@
       </div>
 
       <div class="input-card">
-        <input type="text" id="homeInput" placeholder="Ask your skin problem..." onkeypress="handleEnter(event)">
-        <button class="send-btn" onclick="startChat(document.getElementById('homeInput').value)">
+        <!-- NEW: Camera Scan Button -->
+        <button class="icon-btn" onclick="triggerScan()" title="Scan Ingredients / Face">
+          <i class="ri-camera-line"></i>
+        </button>
+        <input type="text" id="homeInput" placeholder="Ask or scan a product..." onkeypress="handleEnter(event, 'home')">
+        <!-- NEW: Mic Button -->
+        <button class="icon-btn" id="micBtnHome" onclick="toggleVoice('home')">
+          <i class="ri-mic-line"></i>
+        </button>
+        <button class="icon-btn send-btn" onclick="startChat(document.getElementById('homeInput').value)">
           <i class="ri-send-plane-fill"></i>
         </button>
       </div>
 
-      <div class="suggestions-title">Quick Suggestions</div>
+      <!-- NEW: Routine Tracker -->
+      <div class="routine-container">
+        <div class="section-title"><i class="ri-calendar-check-line" style="color: var(--primary-dark);"></i> Daily Tracker</div>
+        
+        <div class="routine-card">
+          <div class="routine-info">
+            <h4>Morning Glow</h4>
+            <p>Cleanser, Vitamin C, SPF</p>
+          </div>
+          <div class="checkbox-custom" onclick="this.classList.toggle('checked'); this.innerHTML = this.classList.contains('checked') ? '<i class=\'ri-check-line\'></i>' : ''"></div>
+        </div>
+        
+        <div class="routine-card">
+          <div class="routine-info">
+            <h4>Night Repair</h4>
+            <p>Double Cleanse, Retinol, Night Cream</p>
+          </div>
+          <div class="checkbox-custom" onclick="this.classList.toggle('checked'); this.innerHTML = this.classList.contains('checked') ? '<i class=\'ri-check-line\'></i>' : ''"></div>
+        </div>
+      </div>
+
+      <div class="section-title">Quick AI Suggestions</div>
       <div class="chips-wrapper">
-        <div class="chip" onclick="startChat('Acne')">Acne</div>
-        <div class="chip" onclick="startChat('Oily Skin')">Oily Skin</div>
-        <div class="chip" onclick="startChat('Dry Skin')">Dry Skin</div>
-        <div class="chip" onclick="startChat('Dark Spots')">Dark Spots</div>
-        <div class="chip" onclick="startChat('Anti-Aging')">Anti-Aging</div>
+        <div class="chip" onclick="startChat('Check this ingredient for acne: Isopropyl Myristate')">Analyze Ingredient</div>
+        <div class="chip" onclick="startChat('I have severe acne that is bleeding')">Severe Acne</div>
+        <div class="chip" onclick="startChat('Best routine for dry skin in winter')">Winter Dry Skin</div>
       </div>
     </div>
 
@@ -380,13 +256,19 @@
         <div class="avatar"><i class="ri-sparkling-fill"></i></div>
         <div class="header-info">
           <h3>GlowAI Expert</h3>
-          <p>● Online</p>
+          <p>● Ready to analyze</p>
         </div>
       </div>
 
       <div class="chat-body" id="chatbox">
-        <!-- Messages go here -->
         
+        <!-- NEW: Simulated Scanner Overlay -->
+        <div class="scan-overlay" id="scanOverlay">
+          <p style="font-weight: bold; margin-bottom: 10px;">Scanning...</p>
+          <div class="scan-box"><div class="scan-line"></div></div>
+          <p style="font-size: 12px; color: #ececec;">Analyzing ingredients/skin...</p>
+        </div>
+
         <div class="typing-indicator" id="typingIndicator">
           <span class="dot"></span>
           <span class="dot"></span>
@@ -396,12 +278,15 @@
 
       <div class="chat-footer">
         <div class="input-card" style="margin-bottom: 0;">
-          <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="handleChatEnter(event)">
-          <button class="send-btn" onclick="sendMessage()">
+          <button class="icon-btn" onclick="triggerScan()"><i class="ri-camera-plus-line"></i></button>
+          <input type="text" id="chatInput" placeholder="Type or say something..." onkeypress="handleEnter(event, 'chat')">
+          <button class="icon-btn" id="micBtnChat" onclick="toggleVoice('chat')">
+            <i class="ri-mic-line"></i>
+          </button>
+          <button class="icon-btn send-btn" onclick="sendMessage()">
             <i class="ri-send-plane-fill"></i>
           </button>
         </div>
-        <p style="font-size: 10px; color: #aaa; text-align: center; margin-top: 8px;">Not medical advice. Consult a dermatologist.</p>
       </div>
     </div>
 
@@ -412,36 +297,78 @@
     const chatView = document.getElementById('chatView');
     const chatbox = document.getElementById('chatbox');
     const typingIndicator = document.getElementById('typingIndicator');
-    const chatInput = document.getElementById('chatInput');
+    const scanOverlay = document.getElementById('scanOverlay');
+    
+    // Voice Recognition Implementation
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition;
+    if(SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = 'en-US';
+      
+      recognition.onresult = (e) => {
+        const script = e.results[0][0].transcript;
+        if(chatView.style.display === 'flex') {
+          document.getElementById('chatInput').value = script;
+          sendMessage();
+        } else {
+          document.getElementById('homeInput').value = script;
+          startChat(document.getElementById('homeInput').value);
+        }
+      };
+      recognition.onend = () => {
+        document.getElementById('micBtnHome').classList.remove('mic-recording');
+        document.getElementById('micBtnChat').classList.remove('mic-recording');
+      };
+    }
 
-    function showHome() {
-      chatView.style.display = 'none';
-      homeView.style.display = 'block';
+    function toggleVoice(source) {
+      if(!recognition) return alert("Speech recognition not supported in this browser.");
+      const btn = document.getElementById(source === 'home' ? 'micBtnHome' : 'micBtnChat');
+      if(btn.classList.contains('mic-recording')) { recognition.stop(); } 
+      else { btn.classList.add('mic-recording'); recognition.start(); }
+    }
+
+    function showHome() { chatView.style.display = 'none'; homeView.style.display = 'block'; }
+
+    function handleEnter(e, source) {
+      if(e.key === 'Enter') {
+        if(source === 'home') startChat(e.target.value);
+        else sendMessage();
+      }
+    }
+
+    // Trigger Simulated Scan
+    function triggerScan() {
+      // Go to chat view
+      homeView.style.display = 'none';
+      chatView.style.display = 'flex';
+      scanOverlay.style.display = 'block';
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+      // Simulate 3 seconds scan time
+      setTimeout(() => {
+        scanOverlay.style.display = 'none';
+        appendUserMsg("📸 [Image Uploaded] Please check my skin / ingredients for issues.");
+        sendRequestToBackend("I uploaded a picture showing dry flaky red skin and some product ingredients like fragrance and alcohol. Can you analyze this?");
+      }, 3000);
     }
 
     function startChat(query) {
       if(!query.trim()) return;
       homeView.style.display = 'none';
       chatView.style.display = 'flex';
+      document.getElementById('homeInput').value = '';
       sendRequestToBackend(query);
     }
 
-    function handleEnter(e) {
-      if(e.key === 'Enter') startChat(e.target.value);
-    }
-
-    function handleChatEnter(e) {
-      if(e.key === 'Enter') sendMessage();
-    }
-
     function sendMessage() {
-      const msg = chatInput.value.trim();
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
       if(!msg) return;
-      
-      // Append user msg
       appendUserMsg(msg);
-      chatInput.value = '';
-      
+      input.value = '';
       sendRequestToBackend(msg);
     }
 
@@ -456,46 +383,55 @@
     function appendAIMsg(data) {
       const div = document.createElement('div');
       div.className = 'bubble bubble-ai';
-      
       let html = '';
       
-      if(data.analysis) {
-        html += `<div class="ai-section-title">Skin Analysis</div>`;
-        html += `<p style="margin-bottom: 12px;">${data.analysis}</p>`;
+      // NEW: Dermatologist Alert
+      if(data.needsDoctor) {
+        html += `
+          <div class="doctor-card">
+            <i class="ri-error-warning-fill"></i>
+            <div>
+              <h5>Medical Attention Recommended</h5>
+              <p>Your symptoms may require a professional dermatologist's diagnosis.</p>
+              <button class="book-btn">Book Appointment</button>
+            </div>
+          </div>
+        `;
       }
       
+      if(data.analysis) {
+        html += `<div class="ai-section-title">Deep Analysis</div>`;
+        html += `<p style="margin-bottom: 12px; font-size: 13px;">${data.analysis}</p>`;
+      }
       if(data.routine) {
-        html += `<div class="ai-section-title">Routine</div>`;
-        if(data.routine.morning) html += `<p>☀️ <b>Morning:</b> ${data.routine.morning}</p>`;
-        if(data.routine.night) html += `<p>🌙 <b>Night:</b> ${data.routine.night}</p>`;
+        html += `<div class="ai-section-title">Prescribed Routine</div>`;
+        if(data.routine.morning) html += `<p style="font-size: 13px;">☀️ <b>AM:</b> ${data.routine.morning}</p>`;
+        if(data.routine.night) html += `<p style="font-size: 13px;">🌙 <b>PM:</b> ${data.routine.night}</p>`;
         html += `<div style="height: 12px;"></div>`;
       }
-      
       if(data.tips && Array.isArray(data.tips)) {
-        html += `<div class="ai-section-title">Useful Tips</div>`;
-        html += `<ul class="ai-list">`;
+        html += `<div class="ai-section-title">Expert Tips</div>`;
+        html += `<ul class="ai-list" style="font-size: 13px;">`;
         data.tips.forEach(t => html += `<li>${t}</li>`);
         html += `</ul>`;
       }
-      
       if(data.products && Array.isArray(data.products)) {
-        html += `<div class="ai-section-title">Recommended Products</div>`;
+        html += `<div class="ai-section-title">Top Commended</div>`;
         html += `<div class="products-carousel">`;
         data.products.forEach(p => {
           html += `
             <div class="product-card">
-              <i class="ri-shopping-bag-3-fill product-icon"></i>
+              <div style="display: flex; justify-content: space-between;">
+                 <i class="ri-flask-fill product-icon"></i>
+                 <i class="ri-shopping-cart-2-line" style="color: #bbb;"></i>
+              </div>
               <div class="product-name">${p.name || 'Product'}</div>
               <div class="product-desc">${p.description || ''}</div>
-              <a href="${p.buyLink || '#'}" target="_blank" class="buy-btn">Buy Now</a>
+              <a href="${p.buyLink || '#'}" target="_blank" class="buy-btn">Add to Cart</a>
             </div>
           `;
         });
         html += `</div>`;
-      }
-      
-      if(Object.keys(data).length === 0) {
-        html += `<p>I couldn't process this right now. Please try again.</p>`;
       }
 
       div.innerHTML = html;
@@ -504,40 +440,31 @@
     }
 
     async function sendRequestToBackend(text) {
-      // Show user message if not already shown via sendMessage
-      if(chatView.style.display !== 'flex') {
-        chatView.style.display = 'flex';
-      }
-      
-      // Check if the last bubble is NOT this text (prevents double entry from startChat)
       const bubbles = document.querySelectorAll('.bubble-user');
       const lastUserMsg = bubbles.length > 0 ? bubbles[bubbles.length-1].innerText : '';
-      if(lastUserMsg !== text) {
-        appendUserMsg(text);
-      }
+      if(lastUserMsg !== text && !text.includes('[Image Uploaded]')) { appendUserMsg(text); }
 
       typingIndicator.style.display = 'flex';
       chatbox.scrollTop = chatbox.scrollHeight;
 
       try {
+        // Appending weather context dynamically for backend intelligence
+        const enrichedPrompt = `Current Local Weather Context: Sunny, high UV index. User query: ${text}`;
+        
         const response = await fetch('http://localhost:5000/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text })
+          body: JSON.stringify({ message: enrichedPrompt })
         });
         
         const result = await response.json();
         typingIndicator.style.display = 'none';
         
-        if(result.reply) {
-          appendAIMsg(result.reply);
-        } else {
-          appendAIMsg({ analysis: "Sorry, I encountered an error. Please try again." });
-        }
+        if(result.reply) appendAIMsg(result.reply);
+        else appendAIMsg({ analysis: "System error occurred." });
       } catch (e) {
-        console.error(e);
         typingIndicator.style.display = 'none';
-        appendAIMsg({ analysis: "Network error. Make sure the Node.js backend is running on port 5000!" });
+        appendAIMsg({ analysis: "Network error. Backend not reachable." });
       }
     }
   </script>
