@@ -16,12 +16,8 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/glowai')
   .catch(err => console.error('MongoDB connection error:', err));
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: 'https://openrouter.ai/api/v1',
-  defaultHeaders: {
-    'HTTP-Referer': 'http://localhost:5000',
-    'X-Title': 'GlowAI Skincare Assistant',
-  },
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: 'https://api.groq.com/openai/v1',
 });
 
 app.post('/ask', async (req, res) => {
@@ -52,7 +48,7 @@ Analyze the user's skin concern and provide EXACTLY a valid JSON response with t
 Ensure exactly 3 product recommendations with simple search links. Keep answers safe, simple, and non-medical.`;
 
     const completion = await openai.chat.completions.create({
-      model: 'meta-llama/llama-3.3-8b-instruct:free',
+      model: 'llama-3.3-70b-versatile',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: message }
